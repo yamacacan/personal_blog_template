@@ -1,0 +1,26 @@
+RewriteEngine On
+
+# Güvenlik: .ht erişimini engelle
+<FilesMatch "^\.ht">
+    Require all denied
+</FilesMatch>
+
+# URL Rewriting: /blog/post/slug -> post.php?slug=slug
+RewriteRule ^blog/post/([a-zA-Z0-9_-]+)$ post.php?slug=$1 [QSA,L]
+
+# Eğer /blog/post/index gibi bir URL'ye gidiliyorsa, anasayfaya yönlendir
+RewriteRule ^blog/post/index$ blog/index.php [L]
+
+# PHP uzantılarını gizle
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^([a-zA-Z0-9_-]+)$ $1.php [L]
+
+# 404 hata sayfası
+ErrorDocument 404 /blog/404.php
+
+# Ana sayfa yönlendirmesi
+DirectoryIndex index.php
+
+# Dizin listelemeyi kapat
+Options -Indexes
