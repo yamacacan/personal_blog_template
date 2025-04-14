@@ -38,41 +38,57 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 require_once('includes/header.php');
 ?>
 
-<div class="page-header">
-    <div class="container">
-        <h2>Giriş</h2>
-    </div>
-</div>
-
-<div class="container">
-    <div class="auth-form mt-5">
-        <h2 class="form-title">Giriş</h2>
-        
-        <form action="" method="POST">
-            <div class="form-group">
-                <label for="username">Kullanıcı Adı</label>
-                <input type="text" class="form-control" id="username" name="username" required>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow border-0 rounded-3">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0"><i class="fas fa-user-circle me-2"></i>Kullanıcı Girişi</h4>
+                </div>
+                <div class="card-body p-4">
+                    <?php echo flashMessage(); ?>
+                    
+                    <form action="" method="POST">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">
+                                <i class="fas fa-user me-1 text-muted"></i> Kullanıcı Adı
+                            </label>
+                            <input type="text" class="form-control" id="username" name="username" required 
+                                   placeholder="Kullanıcı adınızı girin" value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="password" class="form-label">
+                                <i class="fas fa-lock me-1 text-muted"></i> Şifre
+                            </label>
+                            <input type="password" class="form-control" id="password" name="password" required
+                                   placeholder="Şifrenizi girin">
+                        </div>
+                        
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <?php
+                    // Admin hesabı kontrol et
+                    $query = "SELECT * FROM users WHERE is_admin = 1";
+                    $result = mysqli_query($conn, $query);
+                    
+                    if (mysqli_num_rows($result) == 0):
+                    ?>
+                    <div class="text-center mt-3 border-top pt-3">
+                        <p class="mb-0">Admin hesabı oluşturulmamış.</p>
+                        <a href="register" class="btn btn-outline-primary btn-sm mt-2">
+                            <i class="fas fa-user-plus me-1"></i>Admin Kaydı Oluştur
+                        </a>
+                    </div>
+                    <?php endif; ?>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="password">Şifre</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn">Giriş Yap</button>
-            </div>
-        </form>
-        
-        <?php
-        // Admin hesabı kontrol et
-        $query = "SELECT * FROM users WHERE is_admin = 1";
-        $result = mysqli_query($conn, $query);
-        
-        if (mysqli_num_rows($result) == 0):
-        ?>
-        <div class="text-center mt-3">
-            <p>Admin hesabı oluşturulmamış. <a href="register">Admin Kaydı</a></p>
         </div>
-        <?php endif; ?>
     </div>
 </div>
 

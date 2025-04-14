@@ -12,32 +12,52 @@ if (!isLoggedIn() || !isAdmin()) {
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
 $where_clause = "";
 
-if ($filter == 'published') {
-    $where_clause = "WHERE p.published = 1";
-} elseif ($filter == 'drafts') {
-    $where_clause = "WHERE p.published = 0";
-}
-
-// Pagination
+// Get all posts with pagination
 $posts_per_page = 10;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $page = max(1, $page); // Ensure page is at least 1
 $offset = ($page - 1) * $posts_per_page;
 
 // Get total posts count for pagination
-$count_query = "SELECT COUNT(*) as total FROM posts p $where_clause";
+$published_only = ($filter == 'published');
+$draft_only = ($filter == 'drafts');
+
+// Count total posts based on filter
+global $conn;
+if ($filter == 'published') {
+    $count_query = "SELECT COUNT(*) as total FROM posts WHERE published = 1";
+} elseif ($filter == 'drafts') {
+    $count_query = "SELECT COUNT(*) as total FROM posts WHERE published = 0";
+} else {
+    $count_query = "SELECT COUNT(*) as total FROM posts";
+}
 $count_result = mysqli_query($conn, $count_query);
 $count_row = mysqli_fetch_assoc($count_result);
 $total_posts = $count_row['total'];
 $total_pages = ceil($total_posts / $posts_per_page);
 
-// Get posts
-$query = "SELECT p.*, u.username 
-          FROM posts p 
-          JOIN users u ON p.user_id = u.id 
-          $where_clause
-          ORDER BY p.created_at DESC 
-          LIMIT $posts_per_page OFFSET $offset";
+// Get posts using custom query based on filter
+if ($filter == 'published') {
+    $query = "SELECT p.*, u.username 
+              FROM posts p 
+              JOIN users u ON p.user_id = u.id 
+              WHERE p.published = 1
+              ORDER BY p.created_at DESC 
+              LIMIT $posts_per_page OFFSET $offset";
+} elseif ($filter == 'drafts') {
+    $query = "SELECT p.*, u.username 
+              FROM posts p 
+              JOIN users u ON p.user_id = u.id 
+              WHERE p.published = 0
+              ORDER BY p.created_at DESC 
+              LIMIT $posts_per_page OFFSET $offset";
+} else {
+    $query = "SELECT p.*, u.username 
+              FROM posts p 
+              JOIN users u ON p.user_id = u.id 
+              ORDER BY p.created_at DESC 
+              LIMIT $posts_per_page OFFSET $offset";
+}
 $result = mysqli_query($conn, $query);
 
 $posts = [];
@@ -49,16 +69,30 @@ while ($row = mysqli_fetch_assoc($result)) {
 if (isset($_GET['delete'])) {
     $post_id = (int)$_GET['delete'];
     
-    // Delete associated records first
-    mysqli_query($conn, "DELETE FROM post_category WHERE post_id = $post_id");
-    mysqli_query($conn, "DELETE FROM comments WHERE post_id = $post_id");
+    // Check if post exists
+    $post = getPost($post_id, false, true);
     
-    // Then delete the post
-    $delete_query = "DELETE FROM posts WHERE id = $post_id";
-    if (mysqli_query($conn, $delete_query)) {
-        setFlashMessage('Post deleted successfully', 'success');
+    if ($post) {
+        // Delete associated records first
+        $stmt = mysqli_prepare($conn, "DELETE FROM post_category WHERE post_id = ?");
+        mysqli_stmt_bind_param($stmt, "i", $post_id);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+        
+        // Then delete the post
+        $delete_query = "DELETE FROM posts WHERE id = ?";
+        $delete_stmt = mysqli_prepare($conn, $delete_query);
+        mysqli_stmt_bind_param($delete_stmt, "i", $post_id);
+        
+        if (mysqli_stmt_execute($delete_stmt)) {
+            setFlashMessage('Post deleted successfully', 'success');
+        } else {
+            setFlashMessage('Error deleting post: ' . mysqli_error($conn), 'danger');
+        }
+        
+        mysqli_stmt_close($delete_stmt);
     } else {
-        setFlashMessage('Error deleting post: ' . mysqli_error($conn), 'danger');
+        setFlashMessage('Post not found', 'danger');
     }
     
     redirect('posts.php');
@@ -67,20 +101,22 @@ if (isset($_GET['delete'])) {
 require_once('includes/admin_header.php');
 ?>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="mb-0">Posts</h1>
-    <a href="add_post.php" class="btn btn-primary">
+<div class="d-sm-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Posts</h1>
+    <a href="add_post.php" class="btn btn-primary shadow-sm">
         <i class="fas fa-plus me-1"></i> Add New Post
     </a>
 </div>
 
 <!-- Filters -->
-<div class="card mb-4">
+<div class="card shadow mb-4">
     <div class="card-body">
         <div class="row align-items-center">
-            <div class="col-md-6">
+            <div class="col-md-6 mb-3 mb-md-0">
                 <div class="btn-group" role="group">
-                    <a href="posts.php" class="btn btn-<?php echo $filter == 'all' ? 'primary' : 'outline-primary'; ?>">All</a>
+                    <a href="posts.php" class="btn btn-<?php echo $filter == 'all' ? 'primary' : 'outline-primary'; ?>">
+                        All <span class="badge bg-secondary ms-1"><?php echo $total_posts; ?></span>
+                    </a>
                     <a href="posts.php?filter=published" class="btn btn-<?php echo $filter == 'published' ? 'primary' : 'outline-primary'; ?>">Published</a>
                     <a href="posts.php?filter=drafts" class="btn btn-<?php echo $filter == 'drafts' ? 'primary' : 'outline-primary'; ?>">Drafts</a>
                 </div>
@@ -98,10 +134,13 @@ require_once('includes/admin_header.php');
 </div>
 
 <!-- Posts Table -->
-<div class="card mb-4">
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="card-title m-0 font-weight-bold">All Posts<?php echo $filter != 'all' ? ' - ' . ucfirst($filter) : ''; ?></h6>
+    </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-striped table-hover">
+            <table class="table table-hover">
                 <thead>
                     <tr>
                         <th>Title</th>
@@ -122,25 +161,21 @@ require_once('includes/admin_header.php');
                             <tr>
                                 <td>
                                     <a href="edit_post.php?id=<?php echo $post['id']; ?>">
-                                        <?php echo $post['title']; ?>
+                                        <?php echo htmlspecialchars($post['title']); ?>
                                     </a>
                                 </td>
-                                <td><?php echo $post['username']; ?></td>
+                                <td><?php echo htmlspecialchars($post['username']); ?></td>
                                 <td>
                                     <?php
-                                    // Get categories for this post
-                                    $post_id = $post['id'];
-                                    $cat_query = "SELECT c.name FROM categories c 
-                                                  JOIN post_category pc ON c.id = pc.category_id 
-                                                  WHERE pc.post_id = $post_id";
-                                    $cat_result = mysqli_query($conn, $cat_query);
-                                    $categories = [];
+                                    // Get categories for this post using existing function
+                                    $post_categories = getPostCategories($post['id']);
+                                    $category_names = [];
                                     
-                                    while ($cat = mysqli_fetch_assoc($cat_result)) {
-                                        $categories[] = $cat['name'];
+                                    foreach ($post_categories as $category) {
+                                        $category_names[] = htmlspecialchars($category['name']);
                                     }
                                     
-                                    echo !empty($categories) ? implode(', ', $categories) : 'Uncategorized';
+                                    echo !empty($category_names) ? implode(', ', $category_names) : 'Uncategorized';
                                     ?>
                                 </td>
                                 <td><?php echo date('M d, Y', strtotime($post['created_at'])); ?></td>
@@ -185,11 +220,34 @@ require_once('includes/admin_header.php');
                         </li>
                     <?php endif; ?>
                     
-                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                        <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
-                            <a class="page-link" href="?page=<?php echo $i; ?><?php echo $filter != 'all' ? '&filter=' . $filter : ''; ?>"><?php echo $i; ?></a>
-                        </li>
-                    <?php endfor; ?>
+                    <?php
+                    // Limit shown pages
+                    $start_page = max(1, min($page - 2, $total_pages - 4));
+                    $end_page = min($total_pages, max($page + 2, 5));
+                    
+                    // Show first page if not included in range
+                    if ($start_page > 1) {
+                        echo '<li class="page-item"><a class="page-link" href="?page=1' . ($filter != 'all' ? '&filter=' . $filter : '') . '">1</a></li>';
+                        if ($start_page > 2) {
+                            echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                        }
+                    }
+                    
+                    // Display page numbers
+                    for ($i = $start_page; $i <= $end_page; $i++) {
+                        echo '<li class="page-item ' . ($i == $page ? 'active' : '') . '">';
+                        echo '<a class="page-link" href="?page=' . $i . ($filter != 'all' ? '&filter=' . $filter : '') . '">' . $i . '</a>';
+                        echo '</li>';
+                    }
+                    
+                    // Show last page if not included in range
+                    if ($end_page < $total_pages) {
+                        if ($end_page < $total_pages - 1) {
+                            echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                        }
+                        echo '<li class="page-item"><a class="page-link" href="?page=' . $total_pages . ($filter != 'all' ? '&filter=' . $filter : '') . '">' . $total_pages . '</a></li>';
+                    }
+                    ?>
                     
                     <?php if ($page < $total_pages): ?>
                         <li class="page-item">
@@ -208,4 +266,4 @@ require_once('includes/admin_header.php');
     </div>
 </div>
 
-<?php require_once('includes/admin_footer.php'); ?> 
+<?php require_once('includes/admin_footer.php'); ?>

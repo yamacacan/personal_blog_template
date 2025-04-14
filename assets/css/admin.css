@@ -1,0 +1,243 @@
+/* Admin Dashboard Styles */
+:root {
+  --primary-color: #4e73df;
+  --secondary-color: #858796;
+  --success-color: #1cc88a;
+  --info-color: #36b9cc;
+  --warning-color: #f6c23e;
+  --danger-color: #e74a3b;
+  --light-color: #f8f9fc;
+  --dark-color: #5a5c69;
+}
+
+#wrapper {
+  display: flex;
+}
+
+#sidebar-wrapper {
+  min-height: 100vh;
+  width: 250px;
+  transition: all 0.3s ease-in-out;
+  z-index: 999;
+  background: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
+}
+
+#sidebar-wrapper.collapsed {
+  width: 0;
+  overflow: hidden;
+}
+
+/* Add a transition effect for sidebar content */
+#sidebar-wrapper .list-group-flush {
+  transition: opacity 0.3s ease-in-out;
+}
+
+#sidebar-wrapper.collapsed .list-group-flush {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.sb-sidenav-toggled #sidebar-wrapper {
+  margin-left: 0;
+}
+
+body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
+  width: 0;
+  overflow: hidden;
+}
+
+#sidebar-wrapper .sidebar-heading {
+  padding: 1.2rem 1rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+#page-content-wrapper {
+  width: calc(100% - 250px);
+  min-width: 0;
+  transition: all 0.3s ease-in-out;
+}
+
+.list-group-item {
+  border: none;
+  padding: 0.8rem 1.5rem;
+  margin-bottom: 5px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.list-group-item:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-left: 4px solid white !important;
+  color: white !important;
+}
+
+.list-group-item.active {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border-left: 4px solid white !important;
+  color: white !important;
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+  border-radius: 0.5rem;
+  box-shadow: 0 0.15rem 1.75rem rgba(0, 0, 0, 0.15);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  background-color: white;
+  border-left: 0.25rem solid var(--primary-color);
+  transition: transform 0.2s;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+}
+
+.dashboard-card i {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: var(--primary-color);
+}
+
+.dashboard-card h3 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0.5rem 0;
+}
+
+/* Card variants */
+.dashboard-card.primary {
+  border-left-color: var(--primary-color);
+}
+
+.dashboard-card.success {
+  border-left-color: var(--success-color);
+}
+
+.dashboard-card.info {
+  border-left-color: var(--info-color);
+}
+
+.dashboard-card.warning {
+  border-left-color: var(--warning-color);
+}
+
+.dashboard-card.danger {
+  border-left-color: var(--danger-color);
+}
+
+.dashboard-card.primary i {
+  color: var(--primary-color);
+}
+
+.dashboard-card.success i {
+  color: var(--success-color);
+}
+
+.dashboard-card.info i {
+  color: var(--info-color);
+}
+
+.dashboard-card.warning i {
+  color: var(--warning-color);
+}
+
+.dashboard-card.danger i {
+  color: var(--danger-color);
+}
+
+/* Table styles */
+.table-action-buttons {
+  white-space: nowrap;
+}
+
+.table-action-buttons .btn {
+  margin-right: 5px;
+}
+
+/* Custom card design */
+.card {
+  border: none;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+  border-radius: 0.5rem;
+}
+
+.card-header {
+  background-color: #f8f9fc;
+  border-bottom: 1px solid #e3e6f0;
+  padding: 1rem 1.25rem;
+}
+
+.card-header .card-title {
+  font-weight: 600;
+  color: var(--dark-color);
+}
+
+/* Responsive sidebar */
+@media (max-width: 768px) {
+  #sidebar-wrapper {
+    margin-left: -250px;
+  }
+  
+  #sidebar-wrapper.active {
+    margin-left: 0;
+  }
+  
+  #page-content-wrapper {
+    width: 100%;
+  }
+}
+
+/* Form improvements */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+}
+
+/* Button improvements */
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: #2e59d9;
+  border-color: #2653d4;
+}
+
+/* Progress bar improvements */
+.progress {
+  height: 8px;
+  margin: 0.5rem 0;
+  border-radius: 4px;
+}
+
+/* Pagination styling */
+.pagination {
+  margin-top: 1.5rem;
+}
+
+/* Alerts */
+.alert {
+  border-radius: 0.5rem;
+  border: none;
+  box-shadow: 0 0.1rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+/* Footer */
+.sticky-footer {
+  padding: 1rem 0;
+  margin-top: 2rem;
+  background-color: white;
+} 

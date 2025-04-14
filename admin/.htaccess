@@ -1,0 +1,20 @@
+# Deny access to all dot files
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Disable directory listing
+Options -Indexes
+
+# Disable access to PHP files in the uploads directory
+<FilesMatch "\.(php)$">
+    <IfModule mod_rewrite.c>
+        RewriteEngine On
+        RewriteCond %{REQUEST_URI} uploads/
+        RewriteRule .* - [F,L]
+    </IfModule>
+</FilesMatch>
+
+# Set default character set
+AddDefaultCharset UTF-8 

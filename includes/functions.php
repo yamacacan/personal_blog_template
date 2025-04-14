@@ -84,8 +84,11 @@ function getPosts($limit = 10, $offset = 0, $published_only = true) {
 }
 
 // Function to get a single post by ID or slug
-function getPost($identifier, $by_slug = false) {
+function getPost($identifier, $by_slug = false, $admin_view = false) {
     global $conn;
+    
+    // Check if we want to get posts regardless of published status (for admin)
+    $published_condition = $admin_view ? "" : "AND p.published = 1";
     
     // If we are looking by slug
     if ($by_slug) {
@@ -93,7 +96,7 @@ function getPost($identifier, $by_slug = false) {
         $query = "SELECT p.*, u.username 
                   FROM posts p
                   JOIN users u ON p.user_id = u.id
-                  WHERE p.slug = '$identifier' AND p.published = 1
+                  WHERE p.slug = '$identifier' $published_condition
                   LIMIT 1";
     } else {
         // If we are looking by ID
@@ -101,7 +104,7 @@ function getPost($identifier, $by_slug = false) {
         $query = "SELECT p.*, u.username 
                   FROM posts p
                   JOIN users u ON p.user_id = u.id
-                  WHERE p.id = $identifier AND p.published = 1
+                  WHERE p.id = $identifier $published_condition
                   LIMIT 1";
     }
     
@@ -219,4 +222,4 @@ function setFlashMessage($message, $type = 'info') {
     $_SESSION['flash_message'] = $message;
     $_SESSION['flash_type'] = $type;
 }
-?> 
+

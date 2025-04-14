@@ -25,39 +25,22 @@ $skills = [
 // Timeline/Experience data
 $experiences = [
     [
-        'year' => '2022 - Şimdi',
-        'title' => 'Senior Web Developer',
-        'company' => 'TechCorp',
+        'year' => '2025 - Şimdi',
+        'title' => 'Web Developer',
+        'company' => '4Dimension',
         'description' => 'Büyük ölçekli web uygulamaları geliştirme ve mimari tasarım. PHP, JavaScript ve React kullanarak modern web uygulamaları oluşturma.'
-    ],
-    [
-        'year' => '2019 - 2022',
-        'title' => 'Full Stack Developer',
-        'company' => 'WebSolutions',
-        'description' => 'E-ticaret platformları ve içerik yönetim sistemleri geliştirme. Front-end ve back-end teknolojileri ile entegre sistemler kurma.'
-    ],
-    [
-        'year' => '2017 - 2019',
-        'title' => 'Junior Web Developer',
-        'company' => 'StartupHub',
-        'description' => 'Web sitesi bakımı ve yeni özellikler ekleme. Müşteri talepleri doğrultusunda web siteleri geliştirme.'
     ]
 ];
 
 // Education data
 $education = [
     [
-        'year' => '2013 - 2017',
-        'degree' => 'Bilgisayar Mühendisliği',
-        'institution' => 'Ankara Üniversitesi',
+        'year' => '2021 - 2026',
+        'degree' => 'Yazılım Mühendisliği',
+        'institution' => 'Ankara Yıldıırm Beyazıt Üniversitesi',
         'description' => 'Yazılım geliştirme, algoritma tasarımı, veri yapıları ve bilgisayar ağları üzerine kapsamlı eğitim.'
-    ],
-    [
-        'year' => '2018 - 2019',
-        'degree' => 'Web Geliştirme Sertifikası',
-        'institution' => 'TechAcademy',
-        'description' => 'Modern web teknolojileri ve framework\'ler üzerine yoğunlaşılmış eğitim programı.'
     ]
+  
 ];
 ?>
 
@@ -71,8 +54,8 @@ $education = [
                     <p class="text-muted mb-1">Web Developer & Technical Writer</p>
                     <p class="text-muted mb-4">Ankara, Türkiye</p>
                     <div class="d-flex justify-content-center mb-2">
-                        <a href="#" class="btn btn-primary me-2"><i class="fas fa-envelope me-1"></i> İletişim</a>
-                        <a href="#" class="btn btn-outline-primary"><i class="fas fa-download me-1"></i> CV İndir</a>
+                        <a href="blog.php" class="btn btn-primary me-2"><i class="fas fa-envelope me-1"></i> İletişim</a>
+                        
                     </div>
                 </div>
             </div>
@@ -84,7 +67,7 @@ $education = [
                             <p class="mb-0"><i class="fas fa-envelope me-2"></i>Email</p>
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-muted mb-0">info@ahmetcanyamac.com</p>
+                            <p class="text-muted mb-0">yamacahmetcan@gmail.com</p>
                         </div>
                     </div>
                     <hr>

@@ -70,7 +70,7 @@ require_once('includes/header.php');
             <div class="contact-details">
                 <div class="contact-item">
                     <h4>E-posta</h4>
-                    <p><a href="mailto:contact@ahmetcanyamac.com">contact@ahmetcanyamac.com</a></p>
+                    <p><a href="mailto:yamacahmetcan.gmail.com">yamacahmetcan.gmail.com</a></p>
                 </div>
                 
                 <div class="contact-item">
@@ -81,8 +81,8 @@ require_once('includes/header.php');
                 <div class="contact-item">
                     <h4>Sosyal Medya</h4>
                     <div class="social-icons">
-                        <a href="#" class="social-icon">GitHub</a>
-                        <a href="#" class="social-icon">LinkedIn</a>
+                        <a href="https://github.com/yamacacan" class="social-icon">GitHub</a>
+                        <a href="https://www.linkedin.com/in/ahmet-can-yamaç-9b373b252/" class="social-icon">LinkedIn</a>
                         <a href="#" class="social-icon">Twitter</a>
                     </div>
                 </div>

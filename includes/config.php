@@ -73,19 +73,7 @@ $sql = "CREATE TABLE IF NOT EXISTS post_category (
 )";
 mysqli_query($conn, $sql);
 
-// Create comments table
-$sql = "CREATE TABLE IF NOT EXISTS comments (
-    id INT(11) NOT NULL AUTO_INCREMENT,
-    post_id INT(11) NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    comment TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    approved TINYINT(1) NOT NULL DEFAULT 0,
-    PRIMARY KEY (id),
-    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
-)";
-mysqli_query($conn, $sql);
+
 
 // Create messages table for contact form
 $sql = "CREATE TABLE IF NOT EXISTS messages (
@@ -101,14 +89,3 @@ $sql = "CREATE TABLE IF NOT EXISTS messages (
 mysqli_query($conn, $sql);
 
 // Insert default admin user if not exists
-$check_admin = "SELECT * FROM users WHERE username = 'admin'";
-$result = mysqli_query($conn, $check_admin);
-
-if (mysqli_num_rows($result) == 0) {
-    // Password is 'admin123' - hashed
-    $hashed_password = password_hash('admin123', PASSWORD_DEFAULT);
-    $sql = "INSERT INTO users (username, email, password, is_admin) 
-            VALUES ('admin', 'admin@example.com', '$hashed_password', 1)";
-    mysqli_query($conn, $sql);
-}
-?> 

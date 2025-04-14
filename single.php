@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_comment'])) {
                 <?php 
                 $category_links = [];
                 foreach ($post_categories as $cat) {
-                    $category_links[] = '<a href="category?slug=' . $cat['slug'] . '">' . $cat['name'] . '</a>';
+                    $category_links[] = '<a href="category.php?slug=' . $cat['slug'] . '">' . $cat['name'] . '</a>';
                 }
                 echo implode(', ', $category_links);
                 ?>

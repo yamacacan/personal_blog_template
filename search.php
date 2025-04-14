@@ -97,7 +97,7 @@ require_once('includes/header.php');
                                     ?>
                                     
                                     <p class="card-text"><?php echo $excerpt; ?></p>
-                                    <a href="post/<?php echo $post['slug']; ?>" class="btn btn-outline-primary">Devamını Oku</a>
+                                    <a href="post.php?slug=<?php echo $post['slug']; ?>" class="btn btn-outline-primary">Devamını Oku</a>
                                 </div>
                             </div>
                         </div>

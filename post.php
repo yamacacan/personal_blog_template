@@ -11,7 +11,7 @@ if (empty($slug)) {
 $post = getPost($slug, true);
 
 if (!$post || $post['published'] != 1) {
-    setFlashMessage('Post not found', 'danger');
+    setFlashMessage('Yazı bulunamadı', 'danger');
     redirect('blog.php');
 }
 
@@ -23,10 +23,10 @@ $post_categories = getPostCategories($post['id']);
 
 <div class="container my-5">
     <div class="row g-5">
-        <!-- Main Content -->
+        <!-- Ana İçerik -->
         <div class="col-lg-8">
             <article class="p-4 rounded shadow-sm bg-white">
-                <header class="mb-4 border-bottom pb-3">
+            <section class="mb-4 border-bottom pb-3">
                     <h1 class="display-5 fw-bold"><?php echo $post['title']; ?></h1>
                     <div class="d-flex flex-wrap align-items-center text-muted small mt-2">
                         <div class="me-3">
@@ -48,7 +48,7 @@ $post_categories = getPostCategories($post['id']);
                             </div>
                         <?php endif; ?>
                     </div>
-                </header>
+            </section>
 
                 <?php if ($post['featured_image']): ?>
                     <img src="assets/images/<?php echo $post['featured_image']; ?>" alt="<?php echo $post['title']; ?>" class="img-fluid rounded mb-4 shadow-sm">
@@ -60,7 +60,7 @@ $post_categories = getPostCategories($post['id']);
             </article>
 
             <div class="my-4 p-3 bg-white rounded shadow-sm">
-                <h5>Share This Post</h5>
+                <h5>Bu Yazıyı Paylaş</h5>
                 <div class="d-flex mt-2">
                     <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>" target="_blank" class="btn btn-primary me-2">
                         <i class="fab fa-facebook-f"></i>
@@ -75,12 +75,12 @@ $post_categories = getPostCategories($post['id']);
             </div>
         </div>
 
-        <!-- Sidebar -->
+        <!-- Kenar Çubuğu -->
         <div class="col-lg-4">
             <div class="p-4 mb-4 bg-white rounded shadow-sm">
-                <h5 class="mb-3">Search</h5>
+                <h5 class="mb-3">Ara</h5>
                 <form action="search.php" method="GET" class="input-group">
-                    <input type="text" class="form-control" name="q" placeholder="Search..." required>
+                    <input type="text" class="form-control" name="q" placeholder="Arama..." required>
                     <button class="btn btn-dark" type="submit">
                         <i class="fas fa-search"></i>
                     </button>
@@ -88,12 +88,12 @@ $post_categories = getPostCategories($post['id']);
             </div>
 
             <div class="p-4 mb-4 bg-white rounded shadow-sm">
-                <h5 class="mb-3">Categories</h5>
+                <h5 class="mb-3">Kategoriler</h5>
                 <ul class="list-group list-group-flush">
                     <?php
                     $all_categories = getCategories();
                     if (empty($all_categories)): ?>
-                        <li class="list-group-item">No categories found</li>
+                        <li class="list-group-item">Kategori bulunamadı</li>
                     <?php else: ?>
                         <?php foreach ($all_categories as $category): ?>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -116,12 +116,12 @@ $post_categories = getPostCategories($post['id']);
             </div>
 
             <div class="p-4 mb-4 bg-white rounded shadow-sm">
-                <h5 class="mb-3">Recent Posts</h5>
+                <h5 class="mb-3">Son Yazılar</h5>
                 <ul class="list-unstyled">
                     <?php
                     $recent_posts = getPosts(5);
                     if (empty($recent_posts)): ?>
-                        <li>No recent posts</li>
+                        <li>Henüz yazı yok</li>
                     <?php else: ?>
                         <?php foreach ($recent_posts as $recent): ?>
                             <li class="mb-3">

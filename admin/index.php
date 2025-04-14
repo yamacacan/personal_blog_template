@@ -23,21 +23,6 @@ $query = "SELECT COUNT(*) as count FROM categories";
 $result = mysqli_query($conn, $query);
 $categories_count = mysqli_fetch_assoc($result)['count'];
 
-// Count users
-$query = "SELECT COUNT(*) as count FROM users";
-$result = mysqli_query($conn, $query);
-$users_count = mysqli_fetch_assoc($result)['count'];
-
-// Count comments
-$query = "SELECT COUNT(*) as count FROM comments";
-$result = mysqli_query($conn, $query);
-$comments_count = mysqli_fetch_assoc($result)['count'];
-
-// Count pending comments
-$query = "SELECT COUNT(*) as count FROM comments WHERE approved = 0";
-$result = mysqli_query($conn, $query);
-$pending_comments = mysqli_fetch_assoc($result)['count'];
-
 // Get recent posts
 $query = "SELECT p.*, u.username FROM posts p JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC LIMIT 5";
 $result = mysqli_query($conn, $query);
@@ -51,43 +36,39 @@ require_once('includes/admin_header.php');
 ?>
 
 <div class="container-fluid py-4">
-    <h1 class="mb-4">Dashboard</h1>
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+        <a href="add_post.php" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-plus fa-sm text-white-50 me-1"></i> Add New Post
+        </a>
+    </div>
     
     <!-- Stats Cards -->
     <div class="row">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="dashboard-card">
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="dashboard-card primary">
                 <div class="text-center">
                     <i class="fas fa-file-alt"></i>
                     <h3><?php echo $posts_count; ?></h3>
-                    <p>Total Posts</p>
+                    <p class="mb-0">Total Posts</p>
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="dashboard-card">
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="dashboard-card success">
+                <div class="text-center">
+                    <i class="fas fa-check-circle"></i>
+                    <h3><?php echo $published_posts; ?></h3>
+                    <p class="mb-0">Published Posts</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="dashboard-card info">
                 <div class="text-center">
                     <i class="fas fa-folder"></i>
                     <h3><?php echo $categories_count; ?></h3>
-                    <p>Categories</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="dashboard-card">
-                <div class="text-center">
-                    <i class="fas fa-users"></i>
-                    <h3><?php echo $users_count; ?></h3>
-                    <p>Users</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="dashboard-card">
-                <div class="text-center">
-                    <i class="fas fa-comments"></i>
-                    <h3><?php echo $comments_count; ?></h3>
-                    <p>Comments</p>
+                    <p class="mb-0">Categories</p>
                 </div>
             </div>
         </div>
@@ -96,10 +77,10 @@ require_once('includes/admin_header.php');
     <!-- Content Row -->
     <div class="row">
         <!-- Recent Posts -->
-        <div class="col-lg-7">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="card-title m-0">Recent Posts</h5>
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="card-title m-0 font-weight-bold">Recent Posts</h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -122,10 +103,10 @@ require_once('includes/admin_header.php');
                                         <tr>
                                             <td>
                                                 <a href="edit_post.php?id=<?php echo $post['id']; ?>">
-                                                    <?php echo $post['title']; ?>
+                                                    <?php echo htmlspecialchars($post['title']); ?>
                                                 </a>
                                             </td>
-                                            <td><?php echo $post['username']; ?></td>
+                                            <td><?php echo htmlspecialchars($post['username']); ?></td>
                                             <td><?php echo date('M d, Y', strtotime($post['created_at'])); ?></td>
                                             <td>
                                                 <?php if ($post['published']): ?>
@@ -145,47 +126,19 @@ require_once('includes/admin_header.php');
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Quick Stats -->
-        <div class="col-lg-5">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="card-title m-0">Quick Stats</h5>
+            
+            <!-- Quick Actions -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="card-title m-0 font-weight-bold">Quick Actions</h6>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="mb-4">
-                                <h6>Published Posts</h6>
-                                <h2 class="text-primary"><?php echo $published_posts; ?></h2>
-                                <div class="progress" style="height: 5px;">
-                                    <div class="progress-bar" role="progressbar" style="width: <?php echo $posts_count > 0 ? ($published_posts / $posts_count * 100) : 0; ?>%"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="mb-4">
-                                <h6>Pending Comments</h6>
-                                <h2 class="text-warning"><?php echo $pending_comments; ?></h2>
-                                <div class="progress" style="height: 5px;">
-                                    <div class="progress-bar bg-warning" role="progressbar" style="width: <?php echo $comments_count > 0 ? ($pending_comments / $comments_count * 100) : 0; ?>%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Quick Actions -->
-                    <h6 class="mt-4">Quick Actions</h6>
                     <div class="d-grid gap-2">
                         <a href="add_post.php" class="btn btn-primary">
                             <i class="fas fa-plus me-1"></i> New Post
                         </a>
-                        <a href="add_category.php" class="btn btn-secondary">
-                            <i class="fas fa-folder-plus me-1"></i> New Category
-                        </a>
-                        <a href="comments.php?filter=pending" class="btn btn-warning">
-                            <i class="fas fa-comment me-1"></i> Moderate Comments
+                        <a href="categories.php" class="btn btn-success">
+                            <i class="fas fa-folder-plus me-1"></i> Manage Categories
                         </a>
                     </div>
                 </div>

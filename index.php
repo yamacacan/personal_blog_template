@@ -42,35 +42,7 @@ require_once('includes/header.php');
 
 <main class="container">
     <!-- Featured Projects Section -->
-    <section class="featured-projects">
-        <h2 class="section-title">Öne Çıkan Projeler</h2>
-        
-        <div class="row">
-            <?php if (empty($featured_projects)): ?>
-                <div class="col-12">
-                    <div class="alert alert-info">Henüz proje bulunamadı.</div>
-                </div>
-            <?php else: ?>
-                <?php foreach ($featured_projects as $index => $project): ?>
-                    <div class="col-md-4">
-                        <div class="card project-card mb-4">
-                            <?php if ($project['featured_image']): ?>
-                                <img src="assets/images/<?php echo $project['featured_image']; ?>" class="card-img-top" alt="<?php echo $project['title']; ?>">
-                            <?php else: ?>
-                                <img src="<?php echo $placeholder_images[array_rand($placeholder_images)]; ?>" class="card-img-top" alt="<?php echo $project['title']; ?>">
-                            <?php endif; ?>
-                            <div class="card-body">
-                                <h3 class="card-title"><?php echo $project['title']; ?></h3>
-                                <p class="card-text"><?php echo substr(strip_tags($project['content']), 0, 120); ?>...</p>
-                                <a href="post/<?php echo $project['slug']; ?>" class="btn btn-primary">Detaylar</a>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </div>
-    </section>
-    
+   
     <!-- Latest Posts Section -->
     <section class="latest-posts mt-5">
         <h2 class="section-title">Son Blog Yazıları</h2>
@@ -97,7 +69,7 @@ require_once('includes/header.php');
                                 </p>
                                 
                                 <p class="card-text"><?php echo substr(strip_tags($post['content']), 0, 120); ?>...</p>
-                                <a href="post/<?php echo $post['slug']; ?>" class="btn btn-outline-primary">Devamını Oku</a>
+                                <a href="post.php?slug=<?php echo $post['slug']; ?>" class="btn btn-outline-primary">Devamını Oku</a>
                             </div>
                         </div>
                     </div>
