@@ -89,3 +89,14 @@ $sql = "CREATE TABLE IF NOT EXISTS messages (
 mysqli_query($conn, $sql);
 
 // Insert default admin user if not exists
+$check_admin = "SELECT * FROM users WHERE username = 'admin'";
+$result = mysqli_query($conn, $check_admin);
+
+if (mysqli_num_rows($result) == 0) {
+    // Password is 'admin123' - hashed
+    $hashed_password = password_hash('admin123', PASSWORD_DEFAULT);
+    $sql = "INSERT INTO users (username, email, password, is_admin) 
+            VALUES ('admin', 'admin@example.com', '$hashed_password', 1)";
+    mysqli_query($conn, $sql);
+}
+?> 

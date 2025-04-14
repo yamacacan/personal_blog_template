@@ -36,6 +36,10 @@
                 <a href="categories.php" class="list-group-item bg-transparent text-white">
                     <i class="fas fa-folder me-2"></i> Categories
                 </a>
+                <a href="messages.php" class="list-group-item bg-transparent text-white">
+                <i class="fas fa-comments me-2"></i>Message
+              
+                </a>
                 <a href="../index.php" class="list-group-item bg-transparent text-white">
                     <i class="fas fa-home me-2"></i> Visit Site
                 </a>

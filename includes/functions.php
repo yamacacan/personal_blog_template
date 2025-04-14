@@ -29,7 +29,32 @@ function generateSlug($text) {
     
     return $text;
 }
+function deleteMessage($message_id) {
+    global $conn;
+    $delete_query = "DELETE FROM messages WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $delete_query);
+    mysqli_stmt_bind_param($stmt, "i", $message_id);
+    
+    if (mysqli_stmt_execute($stmt)) {
+        return true; // Deletion successful
+    } else {
+        return false; // Deletion failed
+    }
+}
 
+// Function to mark a message as read
+function markMessageAsRead($message_id) {
+    global $conn;
+    $update_query = "UPDATE messages SET is_read = 1 WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $update_query);
+    mysqli_stmt_bind_param($stmt, "i", $message_id);
+    
+    if (mysqli_stmt_execute($stmt)) {
+        return true; // Update successful
+    } else {
+        return false; // Update failed
+    }
+}
 // Function to validate user login
 function validateLogin($username, $password) {
     global $conn;
